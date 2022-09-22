@@ -1,10 +1,20 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 
 function Navbar() {
+
+    let navigate=useNavigate();
+const handleLogout=(e)=>{
+    e.preventDefault()
+    localStorage.removeItem('user')
+    localStorage.removeItem('role')
+    navigate("/signIn")
+}
+
+
     return (<nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
-            <Link className="navbar-brand" to="/home">Portfolio</Link>
+            <Link className="navbar-brand" to="#">Portfolio</Link>
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
             </button>
@@ -13,10 +23,24 @@ function Navbar() {
                     {/* <li className="nav-item">
                         <Link className="nav-link" aria-current="page" to="/home">Home</Link>
                     </li> */}
+                    
+                    {localStorage.getItem('user')? <>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/about">About</Link>
+                    <Link className="nav-link" to="/about">About</Link>
+
+                </li><li className="nav-item">
+                        <Link className="nav-link" to="" onClick={handleLogout}>Log Out</Link>
 
                     </li>
+                   </>: <li className="nav-item">
+                        <Link className="nav-link" to="/signIn">SignIn</Link>
+
+                    </li>}
+                    {localStorage.getItem("role")==="Admin"? <li className="nav-item">
+                        <Link className="nav-link" to="/update" >Update Contact Info</Link>
+
+                    </li>:<></>}
+                   
                 </ul>
             </div>
         </div>

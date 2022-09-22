@@ -1,12 +1,53 @@
-import React from 'react'
+import React ,{useEffect,useState} from 'react'
 import Experience from './Experience'
 import Recommendations from './Recommendations'
 import Contact from './Contact'
 import Skills from './Skills'
+import axios from 'axios'
 
 
-function Home(props) {
-    let user={Name:"George",MobileNo:"8454695874",EmailID:"test@gmail.com",path:"resume.pdf"}
+function Home() {
+
+    const [userPersonal, setuserPersonal] = useState({EmailId: "",Name: "",MobileNo: "",Designation: "",Resume: ""})
+    const [userRecomm, setuserRecomm] = useState({EmailId: "",RecommendBy: "",RecommenderComp: "",RecommenderJobTitle: "",ReferralDate: "",ReferralText:""})
+    const [userExp, setuserExp] = useState({EmailId: "",CompName: "",JobTitle: "",JobDuration: "",Projectsdone: "",Achievements:""})
+
+
+    // let user={Name:"George",MobileNo:"8454695874",EmailID:"test@gmail.com",path:"resume.pdf"}
+
+
+    useEffect(() => {
+        // call api for disconnection data
+        async function fetchData() {
+            // You can await here
+            const response = await axios({
+
+                // Endpoint to send files
+                url: "http://localhost:8080/api/resume/allInfo",
+                method: "GET",
+                params: {
+                    EmailId:localStorage.getItem('user')
+                }
+
+            })
+            if (response.data.respCode === 1) {
+                console.log(response.data)
+                setuserPersonal(response.data.userPersonal)
+                setuserRecomm(response.data.userRecomm)
+                setuserExp(response.data.userExp)
+                console.log(response.data.userExp)
+
+            } else {
+               alert("Unable to fetch the data at this moment")
+            }
+
+
+        }
+        fetchData()      
+    }, []);
+
+
+
     return (<>
         <div ><h3>User Portfolio</h3></div><hr />
 
@@ -16,8 +57,8 @@ function Home(props) {
                     <div className="card text-center">
                         <img src='avatar.jpg' className="card-img-top mx-auto d-block" alt="..." style={{ borderRadius: "50%", padding: "20px", maxWidth: "289px" }} />
                         <div className="card-body">
-                            <h5 className="card-title">{props.name}</h5>
-                            <p className="card-text">{props.info}</p>
+                            <h5 className="card-title">{userPersonal.Name}</h5>
+                            <p className="card-text">{userPersonal.Designation}</p>
                         </div>
 
                     </div>
@@ -52,9 +93,9 @@ function Home(props) {
                                 <div className="tab-content" id="myTabContent">
                                     <div className="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabIndex="0"><Skills  /></div>
 
-                                    <div className="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabIndex="0"><Contact user={user}/></div>
-                                    <div className="tab-pane fade" id="search-tab-pane" role="tabpanel" aria-labelledby="search-tab" tabIndex="0"><Recommendations /></div>
-                                    <div className="tab-pane fade" id="meeting-tab-pane" role="tabpanel" aria-labelledby="meeting-tab" tabIndex="0"><Experience /></div>
+                                    <div className="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabIndex="0"><Contact userPersonal={userPersonal}/></div>
+                                    <div className="tab-pane fade" id="search-tab-pane" role="tabpanel" aria-labelledby="search-tab" tabIndex="0"><Recommendations userRecomm={userRecomm}/></div>
+                                    <div className="tab-pane fade" id="meeting-tab-pane" role="tabpanel" aria-labelledby="meeting-tab" tabIndex="0"><Experience userExp={userExp} /></div>
                                     
                                 </div>
 
