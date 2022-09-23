@@ -28,6 +28,25 @@ router.get('/allInfo',async (req, res) => {
     }
 })
 
+router.post('/updateInfo',async (req, res) => {
+    //if there are errors, Bad request return
+    
+    try {
+            // userId=req.user;
+            // console.log(req.user)
+            // const userRole=await User.findById(userId._id).select("-password")
+            // console.log("Hello"+userRole)
+            // const erp=userRole.ERPID
+            const { EmailId, Name,MobileNo } = req.body;
+            console.log(EmailId,Name,MobileNo)
+            const userPersonal=await Personal.updateOne({EmailId:EmailId},{$set:[{Name:Name},{MobileNo:MobileNo}]})
+           
+            res.send({respCode:1})
+        }catch (error) { //catch error when input passes validation but database constraint on key not done. 
+        console.error(error.message)
+        res.status(500).send('Internal server occured')
+    }
+})
 
 
 
